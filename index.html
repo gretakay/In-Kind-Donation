@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>實物捐贈登錄</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <h1>實物捐贈登錄</h1>
+
+  <form id="donation-form">
+    <!-- 捐贈日期 -->
+    <label>
+      捐贈日期：
+      <input type="date" name="donationDate" id="donationDate" required />
+    </label>
+
+    <!-- 品項 -->
+    <label>
+      品項名稱：
+      <input type="text" name="itemName" required placeholder="例如：綠茶、豆腐、蘋果…" />
+    </label>
+
+    <!-- 單位 -->
+    <label>
+      單位：
+      <select name="unit" required>
+        <option value="">請選擇單位</option>
+        <option value="箱">箱</option>
+        <option value="包">包</option>
+        <option value="袋">袋</option>
+        <option value="罐">罐</option>
+        <option value="瓶">瓶</option>
+        <option value="盒">盒</option>
+        <option value="束">束</option>
+        <option value="支">支</option>
+        <option value="個">個</option>
+      </select>
+    </label>
+
+    <!-- 數量 -->
+    <label>
+      數量：
+      <input type="number" name="quantity" min="1" value="1" required />
+    </label>
+
+    <!-- 放置位置（兩個預設 + 可自行輸入） -->
+    <label>
+      放置位置：
+      <input list="locationList" name="location" required placeholder="選擇或輸入位置" />
+      <datalist id="locationList">
+        <option value="茶水間"></option>
+        <option value="B1齋堂"></option>
+      </datalist>
+    </label>
+
+    <!-- 經手人 -->
+    <label>
+      經手人：
+       <input type="text" name="handler" required placeholder="請輸入經手人" />
+    </label>
+
+    <!-- 有效期限 -->
+    <label>
+      有效期限：
+      <input type="date" name="expiryDate" />
+    </label>
+
+    <button type="submit">送出登錄</button>
+  </form>
+
+  <div id="message"></div>
+
+  <hr />
+
+  <!-- 導覽 -->
+  <nav>
+    <a href="recent.html">查看最近捐贈</a> |
+    <a href="near-expiry.html">查看即期品</a>
+  </nav>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

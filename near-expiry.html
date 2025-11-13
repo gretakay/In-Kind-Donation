@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>即期品清單</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <h1>即期品清單</h1>
+
+  <!-- 篩選列 -->
+  <div class="filter-bar">
+    查詢範圍：
+    <select id="days-select">
+      <option value="3">3 天內到期</option>
+      <option value="7" selected>7 天內到期</option>
+      <option value="14">14 天內到期</option>
+    </select>
+    <button id="reload-btn">重新載入</button>
+  </div>
+
+  <!-- 清單容器，給 main.js 使用 -->
+  <div id="near-expiry-list">載入中…</div>
+
+  <hr />
+
+  <nav>
+    <a href="index.html">回到捐贈登錄</a> |
+    <a href="recent.html">查看最近捐贈</a>
+  </nav>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>最近實物捐贈</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <h1>最近實物捐贈</h1>
+
+  <!-- 篩選列 -->
+  <div class="filter-bar">
+    顯示筆數：
+    <select id="limit-select">
+      <option value="10">10 筆</option>
+      <option value="20" selected>20 筆</option>
+      <option value="50">50 筆</option>
+    </select>
+    <button id="reload-btn">重新載入</button>
+  </div>
+
+  <!-- 清單容器，給 main.js 使用 -->
+  <div id="recent-list">載入中…</div>
+
+  <hr />
+
+  <nav>
+    <a href="index.html">回到捐贈登錄</a> |
+    <a href="near-expiry.html">查看即期品</a>
+  </nav>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

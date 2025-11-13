@@ -1,0 +1,157 @@
+/* 全局設定 */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 1rem;
+  background: #f7f7f7;
+  color: #333;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* 容器寬度控制（手機友善，中間顯示） */
+body > * {
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 表單 */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
+  gap: 0.25rem;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+select {
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #007aff;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.15);
+}
+
+/* 按鈕 */
+button {
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: none;
+  background: #007aff;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+
+button:hover {
+  filter: brightness(1.05);
+}
+
+button:active {
+  filter: brightness(0.95);
+}
+
+/* 訊息區 */
+#message {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* 導覽 */
+nav {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+nav a {
+  color: #007aff;
+  text-decoration: none;
+  margin: 0 0.25rem;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* 清單篩選區塊（最近 / 即期） */
+.filter-bar {
+  max-width: 480px;
+  margin: 0.5rem auto 0.5rem auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.filter-bar select {
+  flex: 1;
+}
+
+/* 卡片 */
+.card {
+  background: #fff;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem auto;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  font-size: 0.95rem;
+}
+
+.card-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.25rem;
+}
+
+.card-main strong {
+  font-size: 1rem;
+}
+
+/* 即期品卡片：用淡色標記 */
+.card-expiry {
+  border-left: 4px solid #ff9500;
+  background: #fff8ec;
+}
+
+.expiry-line {
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+/* 列表容器 */
+#recent-list,
+#near-expiry-list {
+  margin-top: 0.75rem;
+}
