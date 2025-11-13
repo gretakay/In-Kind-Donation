@@ -1,9 +1,11 @@
-/* 全局設定 */
+/* ===== 全局設定 ===== */
+/* 讓所有元素的 box-sizing 為 border-box，方便排版 */
 * {
   box-sizing: border-box;
 }
 
 body {
+  /* 設定全站字型、背景、顏色與內距 */
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   margin: 0;
   padding: 1rem;
@@ -11,6 +13,7 @@ body {
   color: #333;
 }
 
+/* 頁面主標題 */
 h1 {
   font-size: 1.6rem;
   margin-bottom: 1rem;
@@ -24,9 +27,9 @@ body > * {
   margin-right: auto;
 }
 
-/* 表單 */
+/* ===== 表單區塊 ===== */
 form {
-  display: flex;
+  display: flex; /* 垂直排列欄位 */
   flex-direction: column;
   gap: 0.75rem;
   background: #fff;
@@ -35,13 +38,15 @@ form {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
+/* 表單欄位名稱 */
 label {
   display: flex;
   flex-direction: column;
-  font-size: 0.95rem;
+  font-size: 1.25rem; /* 表單字體大小 */
   gap: 0.25rem;
 }
 
+/* 表單輸入欄位與下拉選單 */
 input[type="text"],
 input[type="date"],
 input[type="number"],
@@ -52,6 +57,7 @@ select {
   font-size: 1rem;
 }
 
+/* 輸入欄位聚焦效果 */
 input:focus,
 select:focus {
   outline: none;
@@ -59,10 +65,10 @@ select:focus {
   box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.15);
 }
 
-/* 按鈕 */
+/* ===== 按鈕樣式 ===== */
 button {
   padding: 0.7rem 1rem;
-  border-radius: 999px;
+  border-radius: 999px; /* 圓角膠囊 */
   border: none;
   background: #007aff;
   color: #fff;
@@ -72,22 +78,24 @@ button {
   margin-top: 0.25rem;
 }
 
+/* 滑鼠移到按鈕時變亮 */
 button:hover {
   filter: brightness(1.05);
 }
 
+/* 按下按鈕時變暗 */
 button:active {
   filter: brightness(0.95);
 }
 
-/* 訊息區 */
+/* ===== 訊息區塊 ===== */
 #message {
   margin-top: 0.75rem;
   font-size: 0.95rem;
   text-align: center;
 }
 
-/* 導覽 */
+/* ===== 導覽列 ===== */
 nav {
   margin-top: 1rem;
   text-align: center;
@@ -104,7 +112,7 @@ nav a:hover {
   text-decoration: underline;
 }
 
-/* 清單篩選區塊（最近 / 即期） */
+/* ===== 清單篩選區塊（最近 / 即期） ===== */
 .filter-bar {
   max-width: 480px;
   margin: 0.5rem auto 0.5rem auto;
@@ -114,11 +122,12 @@ nav a:hover {
   font-size: 0.95rem;
 }
 
+/* 篩選下拉選單寬度自動填滿 */
 .filter-bar select {
   flex: 1;
 }
 
-/* 卡片 */
+/* ===== 卡片樣式（捐贈紀錄、即期品） ===== */
 .card {
   background: #fff;
   padding: 0.75rem 1rem;
@@ -128,6 +137,7 @@ nav a:hover {
   font-size: 0.95rem;
 }
 
+/* 卡片主內容（品項/數量/日期） */
 .card-main {
   display: flex;
   justify-content: space-between;
@@ -135,22 +145,24 @@ nav a:hover {
   margin-bottom: 0.25rem;
 }
 
+/* 品項名稱加粗 */
 .card-main strong {
   font-size: 1rem;
 }
 
-/* 即期品卡片：用淡色標記 */
+/* 即期品卡片：用橘色標記左框、淡色底 */
 .card-expiry {
   border-left: 4px solid #ff9500;
   background: #fff8ec;
 }
 
+/* 到期日提示文字 */
 .expiry-line {
   margin-top: 0.25rem;
   font-weight: 600;
 }
 
-/* 列表容器 */
+/* ===== 清單容器（最近/即期） ===== */
 #recent-list,
 #near-expiry-list {
   margin-top: 0.75rem;
