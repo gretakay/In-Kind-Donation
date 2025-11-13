@@ -45,31 +45,31 @@ function initDonationPage() {
       payload.donationDate = new Date().toISOString().slice(0, 10);
     }
 
-    // 先處理照片上傳
-    const photoFile = form.photo && form.photo.files && form.photo.files[0];
-    if (photoFile) {
-      try {
-        const photoForm = new FormData();
-        photoForm.append('action', 'uploadPhoto');
-        photoForm.append('photo', photoFile);
-        // 傳送品項名稱給後端，讓後端可用於檔名
-        photoForm.append('itemName', form.itemName ? form.itemName.value : '');
-        const res = await fetch(API_BASE, {
-          method: 'POST',
-          body: photoForm
-        });
-        const photoResult = await res.json();
-        if (photoResult.success && photoResult.url) {
-          payload.photoUrl = photoResult.url;
-        } else {
-          msg.textContent = '照片上傳失敗：' + (photoResult.message || 'unknown');
-          return;
-        }
-      } catch (err) {
-        msg.textContent = '照片上傳失敗：' + err;
-        return;
-      }
-    }
+    // 先處理照片上傳（暫時註解，僅送出文字資料）
+    // const photoFile = form.photo && form.photo.files && form.photo.files[0];
+    // if (photoFile) {
+    //   try {
+    //     const photoForm = new FormData();
+    //     photoForm.append('action', 'uploadPhoto');
+    //     photoForm.append('photo', photoFile);
+    //     // 傳送品項名稱給後端，讓後端可用於檔名
+    //     photoForm.append('itemName', form.itemName ? form.itemName.value : '');
+    //     const res = await fetch(API_BASE, {
+    //       method: 'POST',
+    //       body: photoForm
+    //     });
+    //     const photoResult = await res.json();
+    //     if (photoResult.success && photoResult.url) {
+    //       payload.photoUrl = photoResult.url;
+    //     } else {
+    //       msg.textContent = '照片上傳失敗：' + (photoResult.message || 'unknown');
+    //       return;
+    //     }
+    //   } catch (err) {
+    //     msg.textContent = '照片上傳失敗：' + err;
+    //     return;
+    //   }
+    // }
 
     try {
       const result = await apiAddDonation(payload);
