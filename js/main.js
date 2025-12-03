@@ -127,6 +127,7 @@ function initRecentPage() {
         return;
       }
 
+
       const html = data.map(item => {
         const donationDate = formatDate(item.donationDate);
         const expiryDate = item.expiryDate ? formatDate(item.expiryDate) : '—';
@@ -134,6 +135,7 @@ function initRecentPage() {
         const unit = item.unit || '';
         const location = item.location || '（未填）';
         const handler = item.handler || '（未填）';
+        const donor = item.DonorName || item.donorName || '（未填）';
         const photo = item.photoUrl ? `<img src="${escapeHtml(item.photoUrl)}" alt="${escapeHtml(item.itemName)}" style="max-width:48px;max-height:48px;margin-right:8px;vertical-align:middle;border-radius:6px;object-fit:cover;">` : '';
 
         return `
@@ -142,6 +144,7 @@ function initRecentPage() {
               ${photo}<strong>${escapeHtml(item.itemName || '（未填品項）')}</strong>
               <span> × ${qty} ${escapeHtml(unit)}</span>
             </div>
+            <div>捐贈者：${escapeHtml(donor)}</div>
             <div>捐贈日期：${donationDate}</div>
             <div>放置位置：${escapeHtml(location)}</div>
             <div>經手人：${escapeHtml(handler)}</div>
@@ -214,6 +217,7 @@ function initNearExpiryPage() {
 
       const today = new Date();
 
+
       const html = data.map(item => {
         const expiry = item.expiryDate ? new Date(item.expiryDate) : null;
         const expiryText = expiry ? formatDate(expiry) : '—';
@@ -231,6 +235,7 @@ function initNearExpiryPage() {
         const unit = item.unit || '';
         const location = item.location || '（未填）';
         const handler = item.handler || '（未填）';
+        const donor = item.DonorName || item.donorName || '（未填）';
         const photo = item.photoUrl ? `<img src="${escapeHtml(item.photoUrl)}" alt="${escapeHtml(item.itemName)}" style="max-width:48px;max-height:48px;margin-right:8px;vertical-align:middle;border-radius:6px;object-fit:cover;">` : '';
 
         return `
@@ -239,6 +244,7 @@ function initNearExpiryPage() {
               ${photo}<strong>${escapeHtml(item.itemName || '（未填品項）')}</strong>
               <span> × ${qty} ${escapeHtml(unit)}</span>
             </div>
+            <div>捐贈者：${escapeHtml(donor)}</div>
             <div>放置位置：${escapeHtml(location)}</div>
             <div>經手人：${escapeHtml(handler)}</div>
             <div class="expiry-line">
