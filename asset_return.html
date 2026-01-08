@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🔙 資產歸還與報損處理</title>
+  <style>
+    :root {
+      --primary-color: #e67e22;
+      --bg-color: #fcf8f3;
+      --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --accent-blue: #3182ce;
+    }
+    body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; padding: 20px; max-width: 850px; margin: auto; background-color: var(--bg-color); color: #333; line-height: 1.5; }
+    h1 { color: var(--primary-color); text-align: center; margin-bottom: 25px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    
+    .main-container { background: white; padding: 30px; border-radius: 16px; box-shadow: var(--card-shadow); }
+    
+    label { font-weight: bold; color: #4a5568; margin-bottom: 8px; display: block; font-size: 0.95em; }
+    input, select { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 16px; box-sizing: border-box; transition: 0.3s; }
+    input:focus, select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1); outline: none; }
+
+    .search-box { background-color: #fffaf0; border: 2px solid #fbd38d !important; font-weight: bold; height: 50px; }
+    
+    .checkbox-group { border: 1px solid #edf2f7; border-radius: 10px; margin-top: 15px; overflow: hidden; background: #fff; max-height: 500px; overflow-y: auto; }
+    .group-item { border-bottom: 1px solid #f1f5f9; }
+    .group-header { display: flex; align-items: center; padding: 18px; cursor: pointer; transition: 0.2s; }
+    .group-header:hover { background: #fffaf5; }
+    .group-header.selected { background: #ebf8ff; }
+    
+    .group-cb { width: 22px; height: 22px; margin-right: 15px; cursor: pointer; accent-color: var(--primary-color); }
+    .asset-thumb { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; margin-right: 15px; border: 1px solid #eee; background: #f7fafc; flex-shrink: 0; }
+    .asset-info { flex-grow: 1; }
+    .asset-info strong { font-size: 1.1em; color: #2d3748; display: block; }
+    .asset-info .meta { font-size: 0.85em; color: #718096; margin-top: 4px; display: flex; gap: 15px; }
+
+    .detail-list { display: none; background: #f8fafc; padding: 5px 0 10px 75px; border-top: 1px dashed #e2e8f0; }
+    .detail-item { display: flex; align-items: center; padding: 10px 15px; font-size: 0.9em; color: #4a5568; cursor: pointer; border-radius: 6px; margin-right: 15px; }
+    .detail-item:hover { background: #edf2f7; }
+    .item-cb { width: 18px; height: 18px; margin-right: 12px; accent-color: var(--accent-blue); }
+
+    .toggle-icon { margin-left: auto; color: #a0aec0; font-size: 0.8em; }
+
+    .status-panel { background: #fff5f5; padding: 20px; border-radius: 12px; margin-top: 25px; border: 1px solid #feb2b2; }
+    .status-panel h3 { margin-top: 0; font-size: 1em; color: #c53030; display: flex; align-items: center; gap: 8px; }
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 12px; }
+
+    .action-bar { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 10px 0; }
+    .btn-group { display: flex; gap: 10px; }
+    .btn-small { padding: 8px 16px; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; font-size: 0.85em; font-weight: 600; background: white; }
+
+    button#submit-btn { width: 100%; padding: 18px; background: linear-gradient(135deg, #ff9800, #e67e22); color: white; border: none; cursor: pointer; border-radius: 10px; font-size: 18px; font-weight: bold; margin-top: 30px; box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3); }
+    button#submit-btn:disabled { background: #cbd5e0; box-shadow: none; cursor: not-allowed; }
+
+    .count-badge { background: #cbd5e0; color: white; padding: 2px 10px; border-radius: 20px; font-weight: bold; margin-left: 5px; transition: 0.3s; }
+    .selected-badge.active { background: var(--accent-blue); }
+
+    .nav { text-align: center; margin-top: 40px; }
+    .nav a { color: #718096; text-decoration: none; font-size: 0.9em; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="main-container">
+    <h1><span>🔙</span> 資產歸還與報損</h1>
+    
+    <form id="return-form">
+      <label>🔍 快速搜尋 (品名、人名、日期、編號)：</label>
+      <input type="text" id="returnSearch" class="search-box" placeholder="輸入關鍵字..." oninput="filterReturnList()">
+      
+      <div class="action-bar">
+        <div>符合紀錄：<span id="resCount" class="count-badge">0</span> ｜ 已選項目：<span id="selectedCount" class="count-badge selected-badge">0</span></div>
+        <div class="btn-group">
+          <button type="button" class="btn-small" onclick="toggleAllFiltered(true)">全選結果</button>
+          <button type="button" class="btn-small" onclick="toggleAll(false)">清除</button>
+        </div>
+      </div>
+
+      <div id="assetList" class="checkbox-group">
+        <div style="text-align:center; padding:40px; color:#a0aec0;">載入借出數據中...</div>
+      </div>
+
+      <div class="status-panel">
+        <h3>🚨 處理方式與狀況回報</h3>
+        <div class="status-grid">
+          <div style="grid-column: span 2;">
+            <select id="targetStatus" class="status-select">
+              <option value="在庫">✅ 正常歸還 (回歸庫房可再次借出)</option>
+              <option value="毀損報廢">❌ 毀損報廢 (物品已損壞不可再用)</option>
+              <option value="遺失扣除">❓ 物品遺失 (從系統庫存中移除)</option>
+              <option value="待維修">🛠️ 待維修 (暫不入庫，進入維修流程)</option>
+            </select>
+          </div>
+          <div>
+            <label>點收經手人：</label>
+            <input type="text" name="handler" id="handlerInput" required placeholder="您的姓名">
+          </div>
+          <div>
+            <label>狀況說明 (選填)：</label>
+            <input type="text" name="note" id="noteInput" placeholder="如：封面破損">
+          </div>
+        </div>
+      </div>
+      
+      <button type="submit" id="submit-btn">確認提交處理紀錄</button>
+    </form>
+  </div>
+
+  <div class="nav"><a href="#" id="home-link">⬅️ 返回管理首頁</a></div>
+
+  <script>
+    let allBorrowedAssets = []; 
+
+    function load() {
+      google.script.run.withSuccessHandler(assets => {
+        allBorrowedAssets = assets;
+        filterReturnList();
+      }).getBorrowedAssets(); 
+    }
+
+    function filterReturnList() {
+      const keyword = document.getElementById('returnSearch').value.trim().toLowerCase();
+      const container = document.getElementById('assetList');
+      container.innerHTML = '';
+
+      const filtered = allBorrowedAssets.filter(a => 
+        a.name.toLowerCase().includes(keyword) || 
+        a.id.toLowerCase().includes(keyword) ||
+        (a.receiver && a.receiver.toLowerCase().includes(keyword)) ||
+        (a.borrowDate && a.borrowDate.includes(keyword))
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:40px; color:#a0aec0;">目前無符合的借出紀錄</div>';
+        document.getElementById('resCount').textContent = "0";
+        updateCount();
+        return;
+      }
+
+      const groups = {};
+      filtered.forEach(item => {
+        const key = `${item.receiver}|${item.borrowDate}|${item.name}`;
+        if (!groups[key]) groups[key] = { name: item.name, receiver: item.receiver, date: item.borrowDate, img: item.photoUrl, items: [] };
+        groups[key].items.push(item);
+      });
+
+      Object.entries(groups).forEach(([key, g], idx) => {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'group-item';
+        const groupId = `group-${idx}`;
+        const imgHtml = g.img ? `<img src="${g.img}" class="asset-thumb">` : `<div class="asset-thumb" style="display:flex; align-items:center; justify-content:center; color:#cbd5e0; font-size:24px;">📦</div>`;
+        
+        groupDiv.innerHTML = `
+          <div class="group-header" onclick="toggleDetails('${groupId}')">
+            <input type="checkbox" class="group-cb" id="cb-${groupId}" onchange="syncGroup(this, '${groupId}')" onclick="event.stopPropagation()">
+            ${imgHtml}
+            <div class="asset-info">
+              <strong>${g.name} <span style="color:var(--primary-color); font-weight:normal;">(共 ${g.items.length} 件)</span></strong>
+              <div class="meta"><span>👤 ${g.receiver}</span><span>📅 ${g.date}</span></div>
+            </div>
+            <span class="toggle-icon">展開明細 ▼</span>
+          </div>
+          <div class="detail-list" id="${groupId}">
+            ${g.items.map(item => `
+              <div class="detail-item" onclick="toggleItemCheck(this)">
+                <input type="checkbox" name="assetIds" value="${item.id}" class="item-cb" data-parent="cb-${groupId}" onchange="updateCount()">
+                <span>編號：<strong>${item.id}</strong> ｜ 位置：${item.location || '庫房'}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(groupDiv);
+      });
+
+      document.getElementById('resCount').textContent = filtered.length;
+      updateCount();
+    }
+
+    function toggleDetails(id) {
+      const el = document.getElementById(id);
+      const icon = el.previousElementSibling.querySelector('.toggle-icon');
+      const isVisible = el.style.display === 'block';
+      el.style.display = isVisible ? 'none' : 'block';
+      icon.textContent = isVisible ? '展開明細 ▼' : '收合明細 ▲';
+    }
+
+    function syncGroup(cb, groupId) {
+      const details = document.getElementById(groupId).querySelectorAll('.item-cb');
+      details.forEach(item => item.checked = cb.checked);
+      updateCount();
+    }
+
+    function toggleItemCheck(el) {
+      const cb = el.querySelector('.item-cb');
+      cb.checked = !cb.checked;
+      updateCount();
+    }
+
+    function updateCount() {
+      const checked = document.querySelectorAll('.item-cb:checked');
+      const badge = document.getElementById('selectedCount');
+      badge.textContent = checked.length;
+      
+      if (checked.length > 0) badge.classList.add('active');
+      else badge.classList.remove('active');
+      
+      document.querySelectorAll('.group-header').forEach(header => {
+        const parentId = header.querySelector('.group-cb').id;
+        const total = document.querySelectorAll(`[data-parent="${parentId}"]`).length;
+        const selected = document.querySelectorAll(`[data-parent="${parentId}"]:checked`).length;
+        header.classList.toggle('selected', selected > 0);
+        header.querySelector('.group-cb').checked = (total === selected && total > 0);
+      });
+    }
+
+    function toggleAllFiltered(state) {
+      document.querySelectorAll('.group-cb, .item-cb').forEach(cb => cb.checked = state);
+      updateCount();
+    }
+
+    function toggleAll(state) {
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = state);
+      updateCount();
+    }
+
+    document.getElementById('return-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const checked = document.querySelectorAll('.item-cb:checked');
+      if (checked.length === 0) { alert("請先勾選處理項目"); return; }
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '正在處理數據，請稍候...';
+      
+      const assetIds = Array.from(checked).map(cb => cb.value);
+      const data = { 
+        assetIds: assetIds, 
+        handler: document.getElementById('handlerInput').value, 
+        note: document.getElementById('noteInput').value,
+        targetStatus: document.getElementById('targetStatus').value
+      };
+      
+      google.script.run.withSuccessHandler(res => {
+        btn.disabled = false;
+        btn.textContent = "確認提交處理紀錄";
+        if(res.success) {
+          alert("✅ " + res.message);
+          
+          // 🚀 強制歸零計數器並清空介面
+          document.getElementById('returnSearch').value = '';
+          document.getElementById('noteInput').value = '';
+          document.getElementById('resCount').textContent = "0";
+          document.getElementById('selectedCount').textContent = "0";
+          document.getElementById('selectedCount').classList.remove('active');
+          
+          load(); // 重新向雲端同步數據
+        } else {
+          alert("❌ 失敗：" + res.message);
+        }
+      }).returnAsset(data);
+    });
+
+    google.script.run.withSuccessHandler(url => document.getElementById('home-link').href = url + "?page=index").getScriptUrl();
+    window.onload = load;
+  </script>
+</body>
+</html>
