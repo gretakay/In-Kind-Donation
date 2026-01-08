@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>📤 物資領用系統 (對比強化版)</title>
+  <title>📤 物資領用系統 (對比強化穩定版)</title>
   <style>
     :root { --primary: #1d4ed8; --success: #059669; --danger: #dc2626; --bg: #f8fafc; --text-main: #0f172a; --text-muted: #475569; }
     body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; padding: 15px; max-width: 650px; margin: auto; background-color: var(--bg); color: var(--text-main); line-height: 1.5; }
@@ -14,16 +14,16 @@
     label { font-weight: 800; color: var(--text-muted); font-size: 0.9em; display: block; margin-bottom: 6px; }
     input, select { width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 10px; font-size: 16px; outline: none; margin-bottom: 12px; color: var(--text-main); font-weight: 500; }
     
-    .search-input { border: 2px solid #3b82f6 !important; background: #eff6ff; }
+    .search-input { border: 2px solid #3b82f6 !important; background: #eff6ff; font-weight: 800; }
 
-    /* 🚀 圖片與資訊預覽區 - 文字加深 */
+    /* 🚀 圖片與資訊預覽區 - 對比強化 */
     #info { display: none; background: #f0f9ff; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #bae6fd; align-items: center; }
-    .preview-img { width: 65px; height: 65px; border-radius: 10px; object-fit: cover; margin-right: 15px; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0; }
+    .preview-img { width: 75px; height: 75px; border-radius: 10px; object-fit: cover; margin-right: 15px; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0; }
     .info-detail b { color: var(--primary); font-size: 1.15rem; }
 
     /* 🚀 清單文字顏色強化 */
     .cart-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #fff; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 10px; }
-    .cart-text { color: var(--text-main); font-size: 1.05rem; font-weight: 800; flex-grow: 1; }
+    .cart-text { color: var(--text-main); font-size: 1.1rem; font-weight: 900; flex-grow: 1; }
     .cart-text b { color: var(--primary); font-size: 1.2rem; margin-left: 4px; }
     .btn-del { color: var(--danger); border: 2px solid #fee2e2; background: #fff; font-weight: 900; cursor: pointer; padding: 8px 15px; border-radius: 10px; transition: 0.2s; }
     .btn-del:hover { background: #fef2f2; border-color: var(--danger); }
@@ -32,10 +32,10 @@
     .btn-blue { background: #2563eb; color: white; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); }
     .btn-green { background: var(--success); color: white; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3); }
 
-    #confirmBox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+    #confirmBox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
     .modal { background: white; width: 100%; max-width: 420px; padding: 30px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
     
-    .loader { border: 3.5px solid #f3f3f3; border-top: 3.5px solid white; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+    .loader { border: 3.5px solid #f3f3f3; border-top: 3.5px solid white; border-radius: 50%; width: 22px; height: 22px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
@@ -51,8 +51,8 @@
     </select>
 
     <div id="sanghaBox" style="background:#fff7ed; padding:12px; border-radius:10px; display:flex; align-items:center; gap:10px; margin-bottom:15px; border:1px solid #fed7aa;">
-      <input type="checkbox" id="sanghaToggle" style="width:22px; height:22px;" onchange="loadData()">
-      <label for="sanghaToggle" style="margin:0; color:#c2410c; cursor:pointer; font-weight:900; font-size:1.05rem;">🔓 顯示並允許領用「供僧」物資</label>
+      <input type="checkbox" id="sanghaToggle" style="width:24px; height:24px;" onchange="loadData()">
+      <label for="sanghaToggle" style="margin:0; color:#c2410c; cursor:pointer; font-weight:900; font-size:1.1rem;">🔓 顯示並允許領用「供僧」物資</label>
     </div>
 
     <label>2. 搜尋與選擇物品</label>
@@ -70,25 +70,25 @@
   </div>
 
   <div class="card" id="cartArea">
-    <label style="color:#0f172a; font-size:1.05rem;">📋 待處理清單</label>
+    <label style="color:#0f172a; font-size:1.1rem;">📋 待處理清單</label>
     <div id="cartList" style="text-align:center; color:#64748b; padding:20px; font-weight:700; font-size:1.1rem;">目前沒有任何物品</div>
     <button id="submitBtn" class="btn-main btn-green" style="margin-top:15px; display:none;" onclick="confirmAll()">✅ 確認無誤，進行最後核對</button>
   </div>
 
   <div id="confirmBox">
     <div class="modal">
-      <h2 style="margin-top:0; text-align:center; color:#0f172a;">📝 最終領用確認</h2>
-      <div id="summary" style="margin-bottom:20px; background:#f8fafc; padding:15px; border-radius:12px; border:2px solid #e2e8f0; font-weight:700;"></div>
+      <h2 style="margin-top:0; text-align:center; color:#0f172a; font-weight:900;">📝 最終領用確認</h2>
+      <div id="summary" style="margin-bottom:20px; background:#f8fafc; padding:15px; border-radius:12px; border:2px solid #e2e8f0; font-weight:800; font-size:1.1rem;"></div>
       
-      <label>領用/借用人</label>
-      <input type="text" id="receiver" placeholder="請輸入對象單位或姓名">
+      <label>領用/借用人 (單位或姓名)</label>
+      <input type="text" id="receiver" placeholder="請填寫對象">
       
       <div id="assetFields" style="display:none;">
         <label>預計歸還日</label>
         <input type="date" id="rDate">
       </div>
 
-      <label>經手人</label>
+      <label>經手人 (點收者)</label>
       <input type="text" id="handler" placeholder="請輸入您的姓名">
 
       <div style="display:flex; gap:12px; margin-top:25px;">
@@ -98,7 +98,7 @@
     </div>
   </div>
 
-  <div style="text-align:center; padding-bottom:30px;"><a href="#" id="homeLink" style="color:#1d4ed8; font-weight:900; text-decoration:none; font-size:1.05rem; border-bottom:2px solid #bfdbfe;">⬅️ 返回主選單</a></div>
+  <div style="text-align:center; padding-bottom:30px;"><a href="#" id="homeLink" style="color:#1d4ed8; font-weight:900; text-decoration:none; font-size:1.1rem; border-bottom:2px solid #bfdbfe;">⬅️ 返回主選單</a></div>
 
   <script>
     let inv = [], assets = [], cart = [];
@@ -138,11 +138,11 @@
         infoDiv.style.display = 'flex';
         const imgHtml = i.photoUrl ? 
           `<img src="${i.photoUrl}" class="preview-img">` : 
-          `<div class="preview-img" style="background:#e2e8f0; display:flex; align-items:center; justify-content:center; color:#64748b; font-size:24px;">📦</div>`;
+          `<div class="preview-img" style="background:#e2e8f0; display:flex; align-items:center; justify-content:center; color:#64748b; font-size:28px;">📦</div>`;
         
-        infoDiv.innerHTML = `${imgHtml}<div class="info-detail"><div style="font-size:0.85rem; color:var(--text-muted); font-weight:700;">📍 ${i.location || '庫房'}</div><b style="color:var(--primary);">目前庫存：${(mode === 'consumable' ? i.qty : i.inStock)}</b></div>`;
+        infoDiv.innerHTML = `${imgHtml}<div><div style="font-size:0.9rem; color:var(--text-muted); font-weight:800;">📍 ${i.location || '庫房'}</div><b style="color:var(--primary); font-size:1.2rem;">目前庫存：${(mode === 'consumable' ? i.qty : i.inStock)}</b></div>`;
         
-        // 🚀 關鍵修改：切換物品時，數量重置為 1
+        // 🚀 關鍵修改：更換物品時，數量自動重置為 1
         document.getElementById('qty').value = 1;
       } else {
         infoDiv.style.display = 'none';
@@ -151,8 +151,7 @@
 
     function add() {
       const sel = document.getElementById('itemSelect');
-      const qtyInput = document.getElementById('qty');
-      const qty = parseInt(qtyInput.value);
+      const qty = parseInt(document.getElementById('qty').value);
       if (!sel.value || isNaN(qty) || qty <= 0) return alert("⚠️ 請先選擇物品並輸入正確數量");
 
       const mode = document.getElementById('mode').value;
@@ -163,9 +162,9 @@
       const existing = cart.find(c => c.name === sel.value);
       const totalInCart = (existing ? existing.qty : 0) + qty;
 
-      // 🚀 關鍵攔截：嚴格檢查總量是否超過庫存
+      // 🚀 關鍵攔截：檢查總領用量是否大於庫存
       if (totalInCart > limit) {
-        return alert(`❌ 庫存不足！無法加入清單。\n\n物品名稱：${sel.value}\n目前庫存：${limit}\n已在清單：${existing ? existing.qty : 0}\n本次欲加：${qty}\n\n請修正數量後再試。`);
+        return alert(`❌ 庫存不足！無法加入清單。\n\n物品：${sel.value}\n目前餘額：${limit}\n已在清單：${existing ? existing.qty : 0}\n欲加數量：${qty}\n\n請修正數量。`);
       }
 
       if (existing) {
@@ -181,7 +180,7 @@
       const sub = document.getElementById('submitBtn');
       if (!cart.length) { list.innerHTML = '目前沒有任何物品'; sub.style.display='none'; return; }
       sub.style.display='block';
-      // 🚀 強化對比與字體重量
+      // 🚀 強化對比與字體
       list.innerHTML = cart.map((c, i) => `
         <div class="cart-row">
           <span class="cart-text">${c.isSangha?'<span style="color:#c2410c;">☸️ [供僧]</span>':''} ${c.name} <b>x ${c.qty}</b></span>
@@ -200,7 +199,7 @@
     async function submit() {
       const receiver = document.getElementById('receiver').value;
       const handler = document.getElementById('handler').value;
-      if (!receiver || !handler) return alert("⚠️ 請填寫領用人與經手人");
+      if (!receiver || !handler) return alert("⚠️ 請填寫領用人與經手人姓名");
       
       const btn = document.getElementById('goBtn');
       btn.disabled = true; btn.innerHTML = '<div class="loader"></div> 正在連線寫入...';
@@ -209,19 +208,23 @@
       const returnDate = document.getElementById('rDate').value;
 
       try {
-        // 使用 Promise.all 確保所有項目寫入完成才執行後續
+        // 使用 Promise.all 同步發送多筆寫入請求
         const tasks = cart.map(item => {
           return new Promise((resolve, reject) => {
             google.script.run
-              .withSuccessHandler(res => resolve(res))
+              .withSuccessHandler(res => {
+                if(res.success) resolve(res);
+                else reject(res.message);
+              })
               .withFailureHandler(err => reject(err))
               .withdrawItem({ itemName: item.name, quantity: item.qty, receiver, handler, returnDate: mode === 'asset' ? returnDate : "" });
           });
         });
 
         await Promise.all(tasks);
-        alert("🎉 領用紀錄已全數成功送出並更新庫存！");
-        location.reload(); 
+        alert("🎉 領用紀錄已成功全數寫入，畫面即將重新整理。");
+        // 🚀 關鍵修復：導向回到領用頁面，防止空白
+        google.script.run.withSuccessHandler(url => { window.top.location.href = url + "?page=withdraw"; }).getScriptUrl();
       } catch (e) {
         alert("❌ 寫入失敗，請檢查網路：" + e.toString());
         btn.disabled = false; btn.innerText = "確認送出紀錄";
