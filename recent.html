@@ -3,35 +3,146 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>最近實物捐贈</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <title>最近捐贈紀錄</title>
+  <style>
+    body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; padding: 20px; line-height: 1.6; background-color: #f4f7f6; color: #333; max-width: 800px; margin: auto; }
+    h1 { color: #2c3e50; text-align: center; margin-bottom: 25px; }
+    ul { list-style: none; padding: 0; }
+    
+    li { 
+      background: white; margin-bottom: 15px; padding: 15px; 
+      border-left: 5px solid #4CAF50; border-radius: 10px; 
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+      display: flex; align-items: flex-start; gap: 15px;
+      transition: 0.3s; position: relative;
+    }
+    
+    /* 供僧物資的特殊邊框顏色（橘色） */
+    li.sangha-item { border-left-color: #f59e0b; }
+    li.out-of-stock { border-left-color: #94a3b8 !important; background-color: #f8fafc; opacity: 0.8; }
+    
+    .record-img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; cursor: zoom-in; flex-shrink: 0; }
+    .no-img { width: 80px; height: 80px; border-radius: 8px; background: #f1f5f9; color: #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+
+    .content-box { flex-grow: 1; }
+
+    .skeleton { background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%); background-size: 200% 100%; animation: shine 1.5s linear infinite; height: 110px; border: none !important; margin-bottom: 15px; border-radius: 8px; }
+    @keyframes shine { to { background-position-x: -200%; } }
+
+    .cat-tag { background: #dcfce7; padding: 3px 10px; border-radius: 20px; font-size: 0.75em; color: #166534; margin-right: 8px; font-weight: bold; }
+    
+    /* 🚀 供僧專用標籤樣式 */
+    .sangha-badge { background: #fef3c7; color: #92400e; padding: 3px 10px; border-radius: 20px; font-size: 0.75em; font-weight: bold; border: 1px solid #fde68a; margin-right: 8px; }
+
+    .color-tag { color: #64748b; font-size: 0.9em; margin-left: 5px; background: #f1f5f9; padding: 1px 6px; border-radius: 4px; }
+    .meta { color: #475569; font-size: 0.85em; margin-top: 4px; }
+    .quantity-info { color: #0f172a; font-weight: bold; }
+    
+    .status-badge { position: absolute; bottom: 15px; right: 15px; font-size: 0.75em; padding: 4px 10px; border-radius: 6px; font-weight: bold; }
+    .badge-none { background: #fee2e2; color: #b91c1c; }
+    .badge-have { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+
+    #image-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; flex-direction: column; }
+    #modal-img { max-width: 90%; max-height: 80%; border-radius: 8px; border: 4px solid white; }
+
+    hr { border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0; }
+    #back-home { display: inline-block; text-decoration: none; color: #2563eb; font-weight: bold; padding: 10px 20px; border-radius: 6px; }
+  </style>
 </head>
-
 <body>
-  <h1>最近實物捐贈</h1>
+  <h1>📋 最近捐贈紀錄（20 筆）</h1>
 
-  <!-- 篩選列 -->
-  <div class="filter-bar">
-    顯示筆數：
-    <select id="limit-select">
-      <option value="10">10 筆</option>
-      <option value="20" selected>20 筆</option>
-      <option value="50">50 筆</option>
-    </select>
-    <button id="reload-btn">重新載入</button>
+  <ul id="list">
+    <li class="skeleton"></li>
+    <li class="skeleton"></li>
+    <li class="skeleton"></li>
+  </ul>
+
+  <div id="image-modal" onclick="this.style.display='none'">
+    <img id="modal-img" src="">
+    <p style="color:white; margin-top:15px; font-size: 0.9em;">(點擊任何處關閉)</p>
   </div>
 
-  <!-- 清單容器，給 main.js 使用 -->
-  <div id="recent-list">載入中…</div>
+  <hr/>
+  <div style="text-align:center;">
+    <a id="back-home" href="#">⬅️ 回功能首頁</a>
+  </div>
 
-  <hr />
+  <script>
+    function loadData() {
+      const ul = document.getElementById('list');
+      
+      // 🚀 紀錄頁面永遠傳入 true，顯示包含供僧在內的所有紀錄
+      google.script.run.withSuccessHandler(res => {
+        if (!res || !res.success) {
+          ul.innerHTML = `<li style="border-left-color: #ef4444; color: #b91c1c;">❌ 載入失敗</li>`;
+          return;
+        }
 
-  <nav>
-    <a href="index.html">回到捐贈登錄</a> |
-    <a href="near-expiry.html">查看即期品</a>
-  </nav>
+        ul.innerHTML = ''; 
 
-  <script src="js/api.js"></script>
-  <script src="js/main.js"></script>
+        const stockMap = {};
+        res.inventory.forEach(item => {
+          const key = item.name + (item.color && item.color !== '無' ? " (" + item.color + ")" : "");
+          stockMap[key] = item.qty;
+        });
+
+        if (res.recent.length === 0) {
+          ul.innerHTML = '<li style="text-align:center; border:none; color:#64748b;">📭 目前尚無任何捐贈紀錄</li>';
+          return;
+        }
+
+        res.recent.forEach(d => {
+          const li = document.createElement('li');
+          // 🚀 判斷是否為供僧，用於加上標籤與變更左側邊框顏色
+          const isSangha = (d.stockStatus === '供僧專用' || d.stockStatus === '供僧');
+          
+          const colorSuffix = (d.color && d.color !== '無') ? ` (${d.color})` : '';
+          const itemKey = d.itemName + colorSuffix;
+          const currentQty = stockMap[itemKey] !== undefined ? stockMap[itemKey] : 0;
+          const isOut = currentQty <= 0;
+
+          if (isOut) li.classList.add('out-of-stock');
+          if (isSangha) li.classList.add('sangha-item');
+
+          const imgHtml = d.photoUrl ? 
+            `<img src="${d.photoUrl}" class="record-img" onclick="zoomImg('${d.photoUrl}')">` : 
+            `<div class="no-img">${isSangha ? '☸️' : '📦'}</div>`;
+
+          li.innerHTML = `
+            ${imgHtml}
+            <div class="content-box">
+              <div class="status-badge ${isOut ? 'badge-none' : 'badge-have'}">
+                ${isOut ? '✓ 已領罄' : '● 餘額：' + currentQty + ' ' + d.unit}
+              </div>
+              <div>
+                <span class="cat-tag">${d.category || '未分類'}</span>
+                ${isSangha ? '<span class="sangha-badge">☸️ 供僧</span>' : ''}
+                <strong>${d.itemName}</strong>${d.color !== '無' ? `<span class="color-tag">${d.color}</span>` : ''}
+              </div>
+              <div class="meta">入庫日期：${d.donationDate}</div>
+              <div class="meta">當時入庫：<span class="quantity-info">${d.quantity} ${d.unit}</span></div>
+              <div class="meta">來源：${d.donorName} | 存放：${d.location || '未標註'}</div>
+            </div>
+          `;
+          ul.appendChild(li);
+        });
+      }).getSummaryData(true); 
+    }
+
+    function zoomImg(src) {
+      const modal = document.getElementById('image-modal');
+      const modalImg = document.getElementById('modal-img');
+      modalImg.src = src;
+      modal.style.display = 'flex';
+    }
+
+    loadData();
+
+    google.script.run.withSuccessHandler(url => {
+      const a = document.getElementById('back-home');
+      a.href = url + "?page=index"; a.target = "_top";
+    }).getScriptUrl();
+  </script>
 </body>
 </html>
